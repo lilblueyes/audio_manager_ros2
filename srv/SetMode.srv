@@ -1,0 +1,5 @@
+# Set audio mode: normal|debug|silent|demo
+string mode
+---
+bool ok
+string message

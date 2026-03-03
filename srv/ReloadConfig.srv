@@ -1,0 +1,4 @@
+# Reload audio configuration from current config_file parameter.
+---
+bool ok
+string message

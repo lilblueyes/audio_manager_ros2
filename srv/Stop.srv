@@ -1,0 +1,6 @@
+# Stop playback.
+# If layer is empty, stop everything.
+string layer
+---
+bool ok
+string message
