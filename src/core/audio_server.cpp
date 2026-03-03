@@ -260,7 +260,7 @@ void AudioServerNode::stop_layer_(const std::string & layer)
     return;
   }
 
-  if (layer == "sfx" || layer == "alerts") {
+  if (layer == "sfx" || layer == "alerts" || layer == "ambience") {
     stop_fx_();
     return;
   }
