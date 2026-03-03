@@ -1,0 +1,92 @@
+audio:
+  master_gain: 1.0
+
+ducking:
+  enabled: true
+  music_gain: 0.35
+  hold_ms: 900
+
+layers:
+  music:
+    gain: 0.7
+    max_polyphony: 1
+    fade_ms: 250
+  sfx:
+    gain: 1.0
+    max_polyphony: 1
+  alerts:
+    gain: 1.0
+    max_polyphony: 1
+
+events:
+  startup:
+    layer: music
+    mode: oneshot
+    priority: 80
+    cooldown_ms: 0
+    variants:
+      - file: startup.wav
+        weight: 1
+
+  background_music:
+    layer: music
+    mode: loop
+    priority: 70
+    cooldown_ms: 1000
+    variants:
+      - file: background_music.wav
+        weight: 1
+
+  notification:
+    layer: sfx
+    mode: oneshot
+    priority: 120
+    cooldown_ms: 300
+    variants:
+      - file: notification.wav
+        weight: 1
+
+  click:
+    layer: sfx
+    mode: oneshot
+    priority: 90
+    cooldown_ms: 100
+    variants:
+      - file: click.wav
+        weight: 1
+
+  beep:
+    layer: sfx
+    mode: oneshot
+    priority: 100
+    cooldown_ms: 150
+    variants:
+      - file: beep.wav
+        weight: 1
+
+  success:
+    layer: sfx
+    mode: oneshot
+    priority: 130
+    cooldown_ms: 300
+    variants:
+      - file: success.wav
+        weight: 1
+
+  warning:
+    layer: alerts
+    mode: oneshot
+    priority: 190
+    cooldown_ms: 500
+    variants:
+      - file: warning.wav
+        weight: 1
+
+  error:
+    layer: alerts
+    mode: oneshot
+    priority: 220
+    cooldown_ms: 700
+    variants:
+      - file: error.wav
+        weight: 1
