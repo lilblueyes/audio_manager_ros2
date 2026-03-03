@@ -172,6 +172,7 @@ bool AudioServerNode::should_accept_event_(const audio_manager_ros2::msg::AudioE
 {
   if (mode_ == "silent") {
     if (ev.force) return true;
+    if (ev.layer == "alerts") return true;
     if (ev.priority >= 200) return true;
     return false;
   }
