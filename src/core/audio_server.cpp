@@ -77,7 +77,7 @@ AudioServerNode::AudioServerNode()
 
   event_sub_ = create_subscription<audio_manager_ros2::msg::AudioEvent>(
     "audio/event",
-    rclcpp::QoS(10).reliable(),
+    rclcpp::QoS(10).reliable().transient_local(),
     std::bind(&AudioServerNode::on_event_, this, std::placeholders::_1));
 
   status_pub_ = create_publisher<audio_manager_ros2::msg::AudioStatus>(
