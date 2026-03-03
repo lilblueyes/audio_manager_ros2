@@ -7,14 +7,18 @@ Generic ROS 2 audio event server.
 ```bash
 colcon build --symlink-install --packages-select audio_manager_ros2
 source install/setup.bash
-ros2 run audio_manager_ros2 audio_server_node
+ros2 launch audio_manager_ros2 audio_server.launch.py mode:=normal
 ```
 
 ## API
 
-- Input topic: `/audio/event` (`audio_manager_ros2/msg/AudioEvent`)
-- Output topic: `/audio/status` (`audio_manager_ros2/msg/AudioStatus`)
-- Services:
-  - `/audio/stop`
-  - `/audio/set_mode`
-  - `/audio/reload_config`
+- Topic in: `/audio/event`
+- Topic out: `/audio/status`
+- Services: `/audio/stop`, `/audio/set_mode`, `/audio/reload_config`
+
+## Modes
+
+- `normal`
+- `debug`
+- `silent`
+- `mute`
