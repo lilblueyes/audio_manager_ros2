@@ -442,7 +442,20 @@ void AudioServerNode::activate_ducking_()
     return;
   }
 
-  return;
+  if (music_.loop) {
+    resume_music_after_duck_ = true;
+    resume_music_event_ = music_.event_id;
+    resume_music_file_ = music_.file;
+    resume_music_priority_ = music_.priority;
+    if (mode_ == "debug") {
+      RCLCPP_INFO(
+        get_logger(),
+        "ducking fallback to stop/resume: music_event=%s file=%s",
+        resume_music_event_.c_str(),
+        short_file(resume_music_file_).c_str());
+    }
+  }
+  stop_music_();
 }
 
 void AudioServerNode::maybe_release_ducking_()
