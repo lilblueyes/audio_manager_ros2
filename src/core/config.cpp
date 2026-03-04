@@ -142,6 +142,10 @@ Config Config::LoadFromFile(const std::string & yaml_path)
     }
   }
 
+  // Clamp ducking to sane values.
+  out.ducking.music_gain = std::clamp(out.ducking.music_gain, 0.0, 1.0);
+  out.ducking.hold_ms = std::max(0, out.ducking.hold_ms);
+
   return out;
 }
 
