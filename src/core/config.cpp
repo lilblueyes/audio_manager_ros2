@@ -49,6 +49,17 @@ std::string resolve_audio_path(const fs::path & yaml_path, const std::string & m
 
   const fs::path config_dir = yaml_path.parent_path();
   const fs::path direct = (config_dir / candidate).lexically_normal();
+  if (fs::exists(direct)) {
+    return direct.string();
+  }
+
+  const fs::path sounds_dir = (config_dir.parent_path() / "sounds").lexically_normal();
+  const fs::path in_sounds = (sounds_dir / candidate).lexically_normal();
+  if (fs::exists(in_sounds)) {
+    return in_sounds.string();
+  }
+
+  // Keep deterministic behavior even if file does not exist yet.
   return direct.string();
 }
 
