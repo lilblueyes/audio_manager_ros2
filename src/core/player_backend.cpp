@@ -197,9 +197,18 @@ void PlayerBackend::stop(const std::shared_ptr<PlaybackHandle> & handle)
   proc->stop_requested.store(true);
 
   if (proc->pid > 0) {
-    (void)::kill(proc->pid, SIGTERM);
-    int status = 0;
-    (void)::waitpid(proc->pid, &status, WNOHANG);
+    const pid_t pid = proc->pid;
+    (void)::kill(pid, SIGTERM);
+
+    for (int i = 0; i < 10; ++i) {
+      int status = 0;
+      const pid_t w = ::waitpid(pid, &status, WNOHANG);
+      if (w == pid) {
+        break;
+      }
+      ::usleep(20000);
+    }
+
     proc->pid = -1;
   }
 
