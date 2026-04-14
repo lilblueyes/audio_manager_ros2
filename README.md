@@ -66,6 +66,7 @@ ros2 service call /audio/reload_config audio_manager_ros2/srv/ReloadConfig "{}"
   - `ffplay`
   - `paplay`
   - `aplay`
+- when `gst-play-1.0` is used, it is launched with `--no-interactive` to avoid keyboard/STDIN side effects in ROS launches
 - `null_backend`: no audio output (useful for CI and simulation).
 
 `player_backend` limitation:

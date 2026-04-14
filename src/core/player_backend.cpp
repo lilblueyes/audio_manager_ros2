@@ -9,6 +9,7 @@
 #include <cerrno>
 #include <cstdlib>
 #include <filesystem>
+#include <fcntl.h>
 #include <sstream>
 #include <stdexcept>
 
@@ -60,6 +61,7 @@ std::vector<std::string> PlayerBackend::build_command_(
       std::vector<std::string> cmd;
       cmd.push_back("gst-play-1.0");
       cmd.push_back("--quiet");
+      cmd.push_back("--no-interactive");
       (void)loop;
 
       std::string uri = file;
@@ -105,6 +107,15 @@ pid_t PlayerBackend::spawn_(const std::vector<std::string> & argv) const
     return -1;
   }
 
+  posix_spawn_file_actions_t file_actions;
+  if (::posix_spawn_file_actions_init(&file_actions) != 0) {
+    (void)::posix_spawnattr_destroy(&attr);
+    return -1;
+  }
+  (void)::posix_spawn_file_actions_addopen(&file_actions, STDIN_FILENO, "/dev/null", O_RDONLY, 0);
+  (void)::posix_spawn_file_actions_addopen(&file_actions, STDOUT_FILENO, "/dev/null", O_WRONLY, 0);
+  (void)::posix_spawn_file_actions_addopen(&file_actions, STDERR_FILENO, "/dev/null", O_WRONLY, 0);
+
   sigset_t def_set;
   sigemptyset(&def_set);
   sigaddset(&def_set, SIGINT);
@@ -120,7 +131,8 @@ pid_t PlayerBackend::spawn_(const std::vector<std::string> & argv) const
   (void)::posix_spawnattr_setpgroup(&attr, 0);
 
   pid_t pid = -1;
-  const int rc = ::posix_spawnp(&pid, cargv[0], nullptr, &attr, cargv.data(), environ);
+  const int rc = ::posix_spawnp(&pid, cargv[0], &file_actions, &attr, cargv.data(), environ);
+  (void)::posix_spawn_file_actions_destroy(&file_actions);
   (void)::posix_spawnattr_destroy(&attr);
   if (rc != 0) {
     return -1;
@@ -243,7 +255,20 @@ bool PlayerBackend::is_running(const std::shared_ptr<PlaybackHandle> & handle)
 
   int status = 0;
   const pid_t w = ::waitpid(proc->pid, &status, WNOHANG);
-  return w == 0;
+  if (w == 0) {
+    return true;
+  }
+  if (w == proc->pid) {
+    proc->pid = -1;
+    return false;
+  }
+  if (w < 0 && errno == ECHILD) {
+    errno = 0;
+    if (::kill(proc->pid, 0) == 0 || errno == EPERM) {
+      return true;
+    }
+  }
+  return false;
 }
 
 bool PlayerBackend::set_gain(const std::shared_ptr<PlaybackHandle> & handle, double gain)

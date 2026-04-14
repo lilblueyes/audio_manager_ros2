@@ -16,6 +16,7 @@ struct Variant
 
 struct EventConfig
 {
+  bool enabled{true};
   std::string layer{"sfx"};
   std::string mode{"oneshot"};
   int priority{120};

@@ -580,6 +580,12 @@ void AudioServerNode::on_event_(const audio_manager_ros2::msg::AudioEvent::Share
   }
 
   const EventConfig & ec = evt_it->second;
+  if (!ec.enabled) {
+    RCLCPP_WARN_THROTTLE(
+      get_logger(), *get_clock(), 2000, "Disabled event_id='%s'", msg->event_id.c_str());
+    return;
+  }
+
   const std::string layer = msg->layer.empty() ? ec.layer : msg->layer;
   const uint8_t priority = msg->priority > 0 ? msg->priority : clamp_priority(ec.priority);
 

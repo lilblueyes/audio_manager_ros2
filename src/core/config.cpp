@@ -122,6 +122,7 @@ Config Config::LoadFromFile(const std::string & yaml_path)
       const YAML::Node en = it.second;
 
       EventConfig ec;
+      ec.enabled = as_bool_or(en, "enabled", true);
       ec.layer = as_string_or(en, "layer", "sfx");
       ec.mode = as_string_or(en, "mode", "oneshot");
       ec.priority = as_int_or(en, "priority", 120);
